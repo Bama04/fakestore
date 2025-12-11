@@ -186,32 +186,15 @@ function renderPage(pageName) {
             });
 
             cartContent.appendChild(div);
-            cartContent.appendChild(div2);
-//             div2.innerHTML += `
-// //     <button onclick="buyCart()" style="
-// //         margin-top:20px;
-// //         padding:12px 20px;
-// //         background:#27ae60;
-// //         color:white;
-// //         border:none;
-// //         border-radius:8px;
-// //         cursor:pointer;
-// //         font-size:16px;
-// //     ">
-// //         Acheter
-// //     </button>
-// // `;
 
-            div2.appendChild(button2);
-            button2.onclick = buyCart;
         });
-
+        cartContent.appendChild(div2);
+        div2.appendChild(button2);
+        button2.onclick = buyCart;
         // Mettre à jour le titre
         const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
         if (pageTitle) pageTitle.textContent = `Cart (${cartItemsCount} items)`;
     }
-
-
 
 }
 
