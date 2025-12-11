@@ -156,11 +156,12 @@ function renderPage(pageName) {
         }
 
         let div2 = document.createElement("div");
-        div2.style = "paddind:10px;border-radius:5px;box-shadow:1px 1px 3px rgba(0,0,0,0.3);margin:3px;";
+        div2.style = "padding:10px;margin:3px;display:flex;align-items:center;justify-content:center;";
         let button2 = document.createElement("button");
-        button.style = "background:red;color:#fff;border:none;padding:8px 12px;border-radius:5px;cursor:pointer;"
+        button2.innerText = "Acheter"
+        button2.style = "background:green;color:#fff;box-shadow:1px 1px 3px rgba(0,0,0,0.3);border:none;padding:8px 12px;border-radius:5px;cursor:pointer;font-size:16px;"
 
-        
+
         // Afficher chaque produit
         cart.forEach(item => {
             const div = document.createElement("div");
@@ -185,6 +186,24 @@ function renderPage(pageName) {
             });
 
             cartContent.appendChild(div);
+            cartContent.appendChild(div2);
+//             div2.innerHTML += `
+// //     <button onclick="buyCart()" style="
+// //         margin-top:20px;
+// //         padding:12px 20px;
+// //         background:#27ae60;
+// //         color:white;
+// //         border:none;
+// //         border-radius:8px;
+// //         cursor:pointer;
+// //         font-size:16px;
+// //     ">
+// //         Acheter
+// //     </button>
+// // `;
+
+            div2.appendChild(button2);
+            button2.onclick = buyCart;
         });
 
         // Mettre à jour le titre
@@ -406,7 +425,7 @@ function removeFromCart(productId) {
     // Si quantité > 1 → décrémenter
     if (item.quantity > 1) {
         item.quantity -= 1;
-    } 
+    }
     // Sinon → supprimer complètement
     else {
         cart = cart.filter(p => p.id !== productId);
@@ -418,6 +437,30 @@ function removeFromCart(productId) {
     // Mettre à jour le dashboard
     updateDashboardStats();
 }
+
+function buyCart() {
+    // Charger le panier
+    const cart = JSON.parse(localStorage.getItem("localCart")) || [];
+
+    // Si le panier est vide → on arrête
+    if (cart.length === 0) {
+        alert("Votre panier est vide.");
+        return;
+    }
+
+    // Message de confirmation
+    alert("Merci pour votre achat ! Votre commande a été validée.");
+
+    // Vider le panier
+    localStorage.removeItem("localCart");
+
+    // Mettre à jour le dashboard
+    updateDashboardStats();
+
+    // Recharger la page panier
+    renderPage("cart");
+}
+
 
 /**
  * Fonctionnalité: Update (Ouvre le formulaire pré-rempli pour la modification)
