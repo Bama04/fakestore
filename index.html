@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon Dashboard E-Commerce</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/script.js" defer></script>
+</head>
+
+<body>
+
+  <div class="container">
+    <aside class="sidebar">
+      <h2>Dashboard</h2>
+      <nav class="nav">
+        <ul>
+          <li data-page="overview" class="active">Overview</li>
+          <li data-page="products">Products</li>
+          <li data-page="categories">Categories</li>
+          <li data-page="cart">Cart (Panier)</li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="header">
+        <h1 id="page-title">Overview</h1>
+      </header>
+
+      <div class="cards" id="dashboard-cards" style="display: flex;">
+        <div class="card">
+          <h4>Total Products</h4>
+          <p><span id="total-products">0</span></p>
+        </div>
+        <div class="card">
+          <h4>Total Categories</h4>
+          <p><span id="total-categories">0</span></p>
+        </div>
+        <div class="card">
+          <h4>Items in Cart</h4>
+          <p><span id="cart-count">0</span></p>
+        </div>
+      </div>
+
+      <section id="products-page" style="display: none;">
+
+        <div style="margin: 20px 0;">
+          <input type="text" id="search-input" placeholder="Rechercher par nom, catégorie ou ID..."
+            style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;" />
+        </div>
+
+        <div style="margin: 20px 0; display: flex; align-items: center; gap: 20px;">
+          <label for="sort-by">Trier par :</label>
+          <select id="sort-by" style="padding: 10px; border-radius: 6px;">
+            <option value="default">Default</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name: A-Z</option>
+          </select>
+
+          <button id="showform" class="btn-1" style="margin-left: auto;">Add a product</button>
+        </div>
+
+        <div class="filters" id="category-filters">
+        </div>
+
+        <div class="product-grid" id="product-grid">
+        </div>
+      </section>
+
+      <section id="cartPage" style="display:none;">
+        <div id="cartContainer"></div>
+      </section>
+
+
+    </main>
+  </div>
+
+  <section id="formsection" class="close-modal modal">
+    <form id="formAddProduct" class="form-box">
+      <h2>Add new Product</h2>
+
+      <label>Category</label>
+      <input type="text" name="category" id="category" placeholder="Enter category" required />
+
+      <label>Product Name</label>
+      <input type="text" name="title" id="title" placeholder="Enter product name" required />
+
+      <label>Price</label>
+      <input type="number" name="price" id="price" placeholder="Enter price" required />
+
+      <label>Image URL</label>
+      <textarea placeholder="Paste image URL (optional)" name="image" id="image"></textarea>
+
+      <label>Description</label>
+      <textarea placeholder="Type description (optional)" name="description" id="description"></textarea>
+
+      <button type="submit">Submit</button>
+      <button id="closeform" type="button">Close</button>
+    </form>
+  </section>
+
+  <section id="product-detail" class="close-modal modal">
+    <div class="form-box">
+      <h2 id="detail-title">Détails du produit</h2>
+      <img id="detail-image" src="" alt="Image du produit" />
+      <p><strong>Price:</strong> <span id="detail-price"></span></p>
+      <p><strong>Description:</strong> <span id="detail-description"></span></p>
+
+      <button id="close-detail" type="button">Close</button>
+    </div>
+  </section>
+
+</body>
+
+</html>

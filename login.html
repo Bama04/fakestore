@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <link rel="stylesheet" href="./css/login.css">
+</head>
+<div class="login-container">
+    <h3 class="login-title">Login</h3>
+
+    <form id="loginForm" method="POST">
+        <div class="form-group">
+            <label>Email :</label><br>
+            <!-- value="john@mail.com" -->
+            <input type="email" id="email"  required placeholder="Votre Email...">
+        </div>
+
+        <div class="form-group">
+            <label>Mot de passe :</label><br>
+            <!-- value="changeme" -->
+            <input type="password" id="password"  required placeholder="Votre Password...">
+        </div>
+
+        <button type="submit" class="login-btn">Sign In</button>
+    </form>
+    <div class="extra-links">
+        <p><a href="#">Forgot Password?</a></p>
+        <p><a href="index.html">Back to Dashboard</a></p>
+    </div>
+    <h3 id="message" class="message"></h3>
+</div>
+
+
+<script>
+    const form = document.getElementById("loginForm");
+    const result = document.getElementById("message");
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault(); // Empêche le rechargement de la page
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            // Requête POST vers l'API Fake Store (Platzi)
+            const response = await fetch("https://api.escuelajs.co/api/v1/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+
+            // Exemple : utiliser le token pour récupérer les Users
+            if (data.access_token) {
+                // ✅ Connexion réussie → redirection vers une autre page
+                message.textContent = "Connexion réussie, redirection...";
+                setTimeout(() => {
+                    window.location.href = "index.html"; // page cible
+                }, 1500);
+            } else {
+                // ❌ Erreur de connexion
+                message.textContent = "Échec de la connexion : " + (data.message || "Vérifiez vos identifiants");
+            }
+        } catch (error) {
+            message.textContent = "Erreur: " + error;
+        }
+    });
+</script>
+</body>
+
+</html>
