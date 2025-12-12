@@ -14,6 +14,9 @@
   <div class="container">
     <aside class="sidebar">
       <h2>Dashboard</h2>
+      <div class="user-profile-widget" id="user-profile-widget">
+        <span class="user-icon">👤</span> <span id="user-email-display">Profile</span>
+      </div>
       <nav class="nav">
         <ul>
           <li data-page="overview" class="active">Overview</li>
@@ -44,6 +47,33 @@
         </div>
       </div>
 
+      <div class="cards" id="advanced-cards" style="display: flex; margin-bottom: 30px;">
+        <div class="card">
+          <h4>Prix Moyen (AVG)</h4>
+          <p><span id="averagePriceValue">0</span></p>
+        </div>
+        <div class="card">
+          <h4>Valeur Totale du Stock</h4>
+          <p><span id="totalInventoryValue">0</span></p>
+        </div>
+        <div class="card">
+          <h4>Produit le Mieux Noté</h4>
+          <p><span id="topRatedProduct">N/A</span></p>
+        </div>
+      </div>
+
+      <section id="overview-mini-showcase">
+        <h2>Nouveautés et Sélection</h2>
+
+        <div class="showcase-section">
+          <h3>Top 4 des Nouveautés</h3>
+          <div id="new-arrivals-container" class="product-grid"
+            style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+          </div>
+          <button id="btn-see-more-products" class="btn-1" style="margin-top: 20px;">Voir Plus de Produits</button>
+        </div>
+      </section>
+
       <section id="products-page" style="display: none;">
 
         <div style="margin: 20px 0;">
@@ -64,6 +94,12 @@
         </div>
 
         <div class="filters" id="category-filters">
+        </div>
+
+        <div class="product-grid" id="product-grid">
+        </div>
+
+        <div id="categories-list-container" style="display: none;">
         </div>
 
         <div class="product-grid" id="product-grid">
@@ -113,6 +149,26 @@
     </div>
   </section>
 
+  <section id="profile-modal" class="close-modal modal">
+    <div class="form-box profile-box">
+      <span id="close-profile-modal" class="close-icon" title="Fermer">✕</span>
+
+      <div class="profile-header">
+        <img id="profile-avatar" src="https://via.placeholder.com/100" alt="Avatar Utilisateur" class="avatar">
+        <h2 id="profile-name">Mon Profil</h2>
+      </div>
+
+      <div class="profile-details">
+        <p><strong>Email:</strong> <span id="profile-email">Chargement...</span></p>
+        <p><strong>Rôle:</strong> <span id="profile-role">Chargement...</span></p>
+        <p><strong>Client N°:</strong> <span id="profile-id">Chargement...</span></p>
+        <p><strong>Localisation:</strong> <span id="profile-location">Non spécifiée</span></p>
+        <p><strong>Téléphone:</strong> <span id="profile-phone">Non spécifié</span></p>
+      </div>
+
+      <button id="logout-btn" type="button" class="btn-logout">Se Déconnecter</button>
+    </div>
+  </section>
 </body>
 
 </html>
