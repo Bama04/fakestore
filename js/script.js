@@ -29,9 +29,40 @@ const detailTitle = document.getElementById("detail-title");
 const detailPrice = document.getElementById("detail-price");
 const detailDescription = document.getElementById("detail-description");
 
+// Pour l'Overview (Mini Vitrine)
+const advancedCards = document.getElementById('advanced-cards');
+const overviewMiniShowcase = document.getElementById('overview-mini-showcase');
+const newArrivalsContainer = document.getElementById('new-arrivals-container');
+const btnSeeMoreProducts = document.getElementById('btn-see-more-products');
+
+// Pour les nouvelles stats
+const averagePriceValue = document.getElementById('averagePriceValue');
+const totalInventoryValue = document.getElementById('totalInventoryValue');
+const topRatedProduct = document.getElementById('topRatedProduct');
+
 // Pour la modale d'ajout/update
 const formHeading = document.querySelector("#formsection h2");
 const cartCountDisplay = document.getElementById("cart-count");
+
+// SECTION CATÉGORIES 
+const categoriesListContainer = document.getElementById('categories-list-container');
+
+// SECTION PROFIL ET LOGOUT (Nouveau)
+const profileModal = document.getElementById("profile-modal");
+const userProfileWidget = document.getElementById("user-profile-widget");
+const btnCloseProfileModal = document.getElementById("close-profile-modal");
+
+// Pour le détail du profil 
+const profileAvatar = document.getElementById("profile-avatar");
+const profileName = document.getElementById("profile-name");
+const profileEmail = document.getElementById("profile-email");
+const profileRole = document.getElementById("profile-role");
+const profileLocation = document.getElementById("profile-location");
+const profilePhone = document.getElementById("profile-phone");
+const profileId = document.getElementById("profile-id");
+const userEmailDisplay = document.getElementById("user-email-display");
+const logoutBtn = document.getElementById("logout-btn");
+
 
 
 // --- VARIABLES GLOBALES ---
@@ -78,6 +109,7 @@ function loadCartFromLocalStorage() {
 // --- INITIALISATION ---
 
 function initDashboard() {
+    loadCurrentUser();
     setupEventListeners();
     loadCartFromLocalStorage();
 
@@ -97,14 +129,115 @@ function initDashboard() {
     }
 }
 
+// FONCTION POUR CHARGER L'UTILISATEUR
+
+function loadCurrentUser() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (user && userEmailDisplay) {
+        // Afficher l'email tronqué pour ne pas surcharger la sidebar
+        const emailPart = user.email ? user.email.split('@')[0] : 'Profil';
+        userEmailDisplay.textContent = emailPart;
+    }
+}
+
+// --- FONCTIONS MODALE PROFIL ---
+
+// --- FONCTIONS MODALE PROFIL ---
+
+function showProfileModal() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+
+    if (user && profileEmail) {
+        // Afficher les données réelles de l'API (Email, Rôle, ID, Avatar)
+
+        // gestion de l'avatar : si l'URL est invalide, utiliser une image de remplacement
+        // La condition vérifie si l'URL est une chaîne de caractères non vide.
+        const avatarUrl = user.avatar && typeof user.avatar === 'string' && user.avatar.length > 5
+            ? user.avatar
+            : 'https://placehold.in/300x200@2x.png/dark'; // Image par défaut élégante
+
+        profileAvatar.src = avatarUrl;
+
+        profileEmail.textContent = user.email || 'N/A';
+        profileRole.textContent = user.role || 'N/A';
+        profileId.textContent = user.id || 'N/A';
+        profileAvatar.src = user.avatar || 'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250';
+
+        // Afficher les données simulées/par défaut (Nom, Localisation, Téléphone)
+        const username = user.email ? user.email.split('@')[0] : 'Utilisateur';
+        profileName.textContent = username.charAt(0).toUpperCase() + username.slice(1);
+        profileLocation.textContent = 'France'; // Simulé
+        profilePhone.textContent = '+33 6 00 00 00 00'; // Simulé
+
+    } else {
+        profileEmail.textContent = "Aucune information utilisateur trouvée.";
+        profileRole.textContent = "Veuillez vous reconnecter.";
+        profileId.textContent = "N/A";
+        profileAvatar.src = 'https://via.placeholder.com/100';
+        profileName.textContent = "Profil Inconnu";
+        profileLocation.textContent = 'Non spécifiée';
+        profilePhone.textContent = 'Non spécifié';
+    }
+
+    if (profileModal) profileModal.classList.replace("close-modal", "show-modal");
+}
+
+function closeProfileModal() {
+    if (profileModal) profileModal.classList.replace("show-modal", "close-modal");
+}
+
+function handleLogout() {
+    if (confirm("Êtes-vous sûr de vouloir vous déconnecter ?")) {
+        // 1. Vider le localStorage
+        localStorage.removeItem('currentUser');
+        // 2. Rediriger vers la page de login
+        window.location.href = "login.html";
+    }
+}
+
+// --- OVERVIEW MINI VITRINE ---
+
+function displayOverviewShowcase(products) {
+    if (!newArrivalsContainer) return;
+
+    // 1. Prendre les 4 premiers produits (simulés comme les "nouveautés")
+    const productsToShow = products.slice(0, 4);
+
+    newArrivalsContainer.innerHTML = ''; // Vider le conteneur
+
+    productsToShow.forEach(product => {
+        let div = document.createElement("div");
+        div.className = "product-card"; // Réutiliser le style de la carte produit
+
+        // Affichage simple pour l'Overview
+        div.innerHTML = `
+            <img src="${product.image}" alt="${product.title}" style="max-width: 100%; height: 80px; object-fit: contain; margin-bottom: 5px;">
+            <h4 style="font-size: 0.9em; height: 3em; overflow: hidden;">${product.title}</h4>
+            <span style="font-size: 1em;">$${product.price}</span>
+            <div class="button-grid-container"></div> `;
+        newArrivalsContainer.appendChild(div);
+    });
+}
+
 // --- NAVIGATION SPA ---
 
 function renderPage(pageName) {
     if (dashboardCards) dashboardCards.style.display = 'none';
+    if (advancedCards) advancedCards.style.display = 'none'; // affiche l'overview
+    if (overviewMiniShowcase) overviewMiniShowcase.style.display = 'none'; // affiche l'overview
     if (productsPage) productsPage.style.display = 'none';
+
+    // Masquer les conteneurs produits/catégories par défaut 
+    if (productContainer) productContainer.style.display = 'grid'; // Rétablir la grille par défaut
+    if (categoriesListContainer) categoriesListContainer.style.display = 'none'; // Masquer la liste
 
     closeFormSection();
     closeDetailModal();
+
+    // Fermer la modale de profil si elle est ouverte
+    closeProfileModal();
+
+    if (dashboardCards) dashboardCards.style.display = 'none';
 
     navItems.forEach(item => {
         item.classList.remove('active');
@@ -121,14 +254,20 @@ function renderPage(pageName) {
 
     if (pageName === 'overview' && dashboardCards) {
         dashboardCards.style.display = 'flex';
+        if (advancedCards) advancedCards.style.display = 'flex'; // affiche l overview
+        if (overviewMiniShowcase) overviewMiniShowcase.style.display = 'block'; // affiche l overview
+        updateDashboardStats(allProducts); // Assurer la mise à jour des stats et produits
+        displayOverviewShowcase(allProducts); // Nouveau appel affiche produit-overview
     } else if (pageName === 'products' && productsPage) {
         productsPage.style.display = 'block';
         if (allProducts.length > 0) {
-            displayProducts(allProducts);
+            displayProducts(allProducts); // Affiche la grille
         }
     } else if (pageName === 'categories' && productsPage) {
         productsPage.style.display = 'block';
-        renderCategoriesPage();
+        if (productContainer) productContainer.style.display = 'none'; // Masquer la grille
+        if (categoriesListContainer) categoriesListContainer.style.display = 'block'; // Afficher la liste
+        renderCategoriesPage(); // Construit la liste dans le nouveau conteneur
     } else if (pageName === 'cart' && cartPage) {
 
         productsPage.style.display = 'none';
@@ -493,6 +632,21 @@ function updateDashboardStats(products = allProducts) {
     const totalProducts = products.length;
     const totalCategories = [...new Set(products.map(p => p.category))].length;
 
+    // CALCULS AVANCÉS POUR L'OVERVIEW
+    const totalValue = products.reduce((sum, product) => sum + product.price, 0);
+    const averagePrice = (totalValue / totalProducts).toFixed(2);
+
+    // Trouver le produit le mieux noté
+    const topProduct = products.reduce((best, current) => {
+        // Vérifie si le produit actuel a une meilleure note (ou si 'best' n'est pas encore défini)
+        // On utilise la propriété rating.rate si elle existe, sinon on suppose 0
+        const currentRate = current.rating ? current.rating.rate : 0;
+        const bestRate = best.rating ? best.rating.rate : 0;
+        return currentRate > bestRate ? current : best;
+    }, { rating: { rate: -1 } }); // Initialiser avec une note impossiblement basse
+
+    const topProductName = topProduct && topProduct.title ? topProduct.title.substring(0, 25) + '...' : 'N/A';
+
     const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
 
     const totalProductsEl = document.getElementById("total-products");
@@ -502,6 +656,11 @@ function updateDashboardStats(products = allProducts) {
     if (totalCategoriesEl) totalCategoriesEl.textContent = totalCategories;
 
     if (cartCountDisplay) cartCountDisplay.textContent = totalCartItems;
+
+    // MISE À JOUR DES NOUVELLES CARTES
+    if (averagePriceValue) averagePriceValue.textContent = `$${averagePrice}`;
+    if (totalInventoryValue) totalInventoryValue.textContent = `$${totalValue.toFixed(2)}`;
+    if (topRatedProduct) topRatedProduct.textContent = topProductName;
 }
 
 function setupCategoryFilters(products) {
@@ -587,9 +746,9 @@ function sortProducts(products, sortBy) {
 }
 
 function renderCategoriesPage() {
-    if (!productContainer) return;
-    productContainer.innerHTML = '';
-    productContainer.style.display = 'block';
+    if (!categoriesListContainer) return;
+
+    categoriesListContainer.innerHTML = ''; // Vider le nouveau conteneur
 
     const categories = [...new Set(allProducts.map(p => p.category))];
 
@@ -614,8 +773,8 @@ function renderCategoriesPage() {
     const h3 = document.createElement('h3');
     h3.textContent = 'Liste des Catégories disponibles :';
 
-    productContainer.appendChild(h3);
-    productContainer.appendChild(ul);
+    categoriesListContainer.appendChild(h3);
+    categoriesListContainer.appendChild(ul);
 }
 
 
@@ -635,6 +794,19 @@ function setupEventListeners() {
             searchProducts(e.target.value);
         });
     }
+
+    // Écouteur Voir Plus de l'Overview (Nouveau)
+    if (btnSeeMoreProducts) {
+        btnSeeMoreProducts.addEventListener('click', () => {
+            renderPage('products');
+        });
+    }
+
+    // NOUVEAUX ÉCOUTEURS PROFIL
+    if (userProfileWidget) userProfileWidget.addEventListener("click", showProfileModal);
+    if (btnCloseProfileModal) btnCloseProfileModal.addEventListener("click", closeProfileModal);
+    if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+
 
     // Autres écouteurs (avec vérification de l'existence des éléments)
     if (btnCloseDetail) btnCloseDetail.addEventListener("click", closeDetailModal);
@@ -722,6 +894,14 @@ function setupEventListeners() {
             }
         });
     }
+
+    // Fermeture de la modale en cliquant en dehors
+    if (profileModal) profileModal.addEventListener("click", (e) => {
+        // Si l'élément cliqué est la modale elle-même (le fond noir)
+        if (e.target === profileModal) {
+            closeProfileModal();
+        }
+    });
 }
 
 // Démarrage: 
